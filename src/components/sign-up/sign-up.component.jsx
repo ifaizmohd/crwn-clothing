@@ -26,7 +26,10 @@ class SignUp extends React.Component {
     }
 
     try {
-      const { user } = await auth.signInWithEmailAndPassword(email, password);
+      const { user } = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
       await createUserProfileDocument(user, { displayName });
       this.setState({
         displayName: "",
@@ -77,7 +80,7 @@ class SignUp extends React.Component {
           />
           <FormInput
             type="password"
-            name="password"
+            name="confirmPassword"
             value={confirmPassword}
             handleChange={this.handleChange}
             required
