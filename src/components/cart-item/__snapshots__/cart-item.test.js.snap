@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Cart component testing Shallow snapshot testing of cart-item component 1`] = `ShallowWrapper {}`;
