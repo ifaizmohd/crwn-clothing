@@ -5,29 +5,38 @@ import {
   clearItemFromCart,
   removeItem,
 } from "../../redux/cart/cart.actions";
-import "./checkout-item.styles.scss";
+import {
+  ArrowContainer,
+  CheckoutItemContainer,
+  ImageContainer,
+  NameField,
+  PriceField,
+  QuantityField,
+  RemoveButtonContainer,
+  ValueField,
+} from "./checkout-item.styles";
 
 const CheckoutItem = ({ cartItem, clearItem, addItem, removeItem }) => (
-  <div className="checkout-item">
-    <div className="image-container">
+  <CheckoutItemContainer>
+    <ImageContainer>
       <img src={cartItem.imageUrl} alt="item" />
-    </div>
-    <span className="name">{cartItem.name}</span>
+    </ImageContainer>
+    <NameField>{cartItem.name}</NameField>
 
-    <span className="quantity">
-      <div className="arrow" onClick={() => removeItem(cartItem)}>
+    <QuantityField>
+      <ArrowContainer onClick={() => removeItem(cartItem)}>
         &#10094;
-      </div>
-      <span className="value">{cartItem.quantity}</span>
-      <div className="arrow" onClick={() => addItem(cartItem)}>
+      </ArrowContainer>
+      <ValueField>{cartItem.quantity}</ValueField>
+      <ArrowContainer onClick={() => addItem(cartItem)}>
         &#10095;
-      </div>
-    </span>
-    <span className="price">{cartItem.price}</span>
-    <div className="remove-button" onClick={() => clearItem(cartItem)}>
+      </ArrowContainer>
+    </QuantityField>
+    <PriceField>{cartItem.price}</PriceField>
+    <RemoveButtonContainer onClick={() => clearItem(cartItem)}>
       &#10005;
-    </div>
-  </div>
+    </RemoveButtonContainer>
+  </CheckoutItemContainer>
 );
 
 const mapDispatchToProps = (dispatch) => ({
