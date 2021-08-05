@@ -12,6 +12,7 @@ import { selectCurrentUser } from "./redux/user/user.selector";
 
 import Header from "./components/header/header.component";
 import Spinner from "./components/spinner/spinner.component";
+import ErrorBoundary from "./components/error-boundary/error-boundary.component";
 
 const HomePage = lazy(() => import("./pages/homepage/homepage.component"));
 const ShopPage = lazy(() => import("./pages/shop/shop.component"));
@@ -47,22 +48,24 @@ class App extends React.Component {
       <div className="App">
         <Header />
         <Switch>
-          <Suspense fallback={<Spinner />}>
-            <Route exact path="/" component={HomePage} />
-            <Route path="/shop" component={ShopPage} />
-            <Route
-              exact
-              path="/signin"
-              render={() =>
-                this.props.currentUser ? (
-                  <Redirect to="/" />
-                ) : (
-                  <SignUpAndSignInPage />
-                )
-              }
-            />
-            <Route exact path="/checkout" component={CheckoutPage} />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<Spinner />}>
+              <Route exact path="/" component={HomePage} />
+              <Route path="/shop" component={ShopPage} />
+              <Route
+                exact
+                path="/signin"
+                render={() =>
+                  this.props.currentUser ? (
+                    <Redirect to="/" />
+                  ) : (
+                    <SignUpAndSignInPage />
+                  )
+                }
+              />
+              <Route exact path="/checkout" component={CheckoutPage} />
+            </Suspense>
+          </ErrorBoundary>
         </Switch>
       </div>
     );
