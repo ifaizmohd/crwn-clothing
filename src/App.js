@@ -10,6 +10,7 @@ import { selectCurrentUser } from "./redux/user/user.selector";
 import Header from "./components/header/header.component";
 import Spinner from "./components/spinner/spinner.component";
 import ErrorBoundary from "./components/error-boundary/error-boundary.component";
+import { checkUserSession } from "./redux/user/user.actions";
 
 const HomePage = lazy(() => import("./pages/homepage/homepage.component"));
 const ShopPage = lazy(() => import("./pages/shop/shop.component"));
@@ -19,12 +20,12 @@ const SignUpAndSignInPage = lazy(() =>
 const CheckoutPage = lazy(() => import("./pages/checkout/checkout.component"));
 
 class App extends React.Component {
-  unSubscribeFromAuth = null;
-  componentDidMount() {}
-
-  componentWillUnmount() {
-    this.unSubscribeFromAuth();
+  componentDidMount() {
+    const { getCurrentUser } = this.props;
+    getCurrentUser();
   }
+
+  componentWillUnmount() {}
 
   render() {
     return (
@@ -59,4 +60,8 @@ const mapStateToProps = createStructuredSelector({
   currentUser: selectCurrentUser,
 });
 
-export default connect(mapStateToProps)(App);
+const mapDispatchToProps = (dispatch) => ({
+  getCurrentUser: () => dispatch(checkUserSession()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
