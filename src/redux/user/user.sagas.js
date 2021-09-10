@@ -10,6 +10,8 @@ import {
   signinSuccess,
   signOutFailure,
   signOutSuccess,
+  signUpFailure,
+  signUpSuccess,
 } from "./user.actions";
 import { UserActionTypes } from "./user.types";
 
@@ -60,23 +62,36 @@ function* signOut() {
   }
 }
 
-export function* onGoogleSignInStart() {
+function* signUp({ payload: { displayName, email, password } }) {
+  try {
+    const { user } = yield auth.createUserWithEmailAndPassword(email, password);
+    yield put(signUpSuccess({ user, additionalData: { displayName } }));
+  } catch (error) {
+    yield put(signUpFailure(error.message));
+  }
+}
+
+function* onGoogleSignInStart() {
   yield takeLatest(UserActionTypes.GOOGLE_SIGN_IN_START, signInWithGoogle);
 }
 
-export function* onEmailSignInStart() {
+function* onEmailSignInStart() {
   yield takeLatest(
     UserActionTypes.EMAIL_SIGN_IN_START,
     signInWithEmailAndPassword
   );
 }
 
-export function* onCheckUserSession() {
+function* onCheckUserSession() {
   yield takeLatest(UserActionTypes.CHECK_USER_SESSION, isAuthenticated);
 }
 
-export function* onSignOutStart() {
+function* onSignOutStart() {
   yield takeLatest(UserActionTypes.SIGN_OUT_START, signOut);
+}
+
+function* onSignUpStart() {
+  yield takeLatest(UserActionTypes.SIGN_UP_START, signUp);
 }
 
 export function* userSagas() {
@@ -85,5 +100,6 @@ export function* userSagas() {
     call(onEmailSignInStart),
     call(onCheckUserSession),
     call(onSignOutStart),
+    call(onSignUpStart),
   ]);
 }
