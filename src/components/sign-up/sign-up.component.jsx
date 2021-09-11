@@ -26,7 +26,7 @@ class SignUp extends React.Component {
       alert("Password don't match");
       return;
     }
-    signUpStart(displayName, email, password);
+    signUpStart({ displayName, email, password });
     this.setState({
       displayName: "",
       email: "",

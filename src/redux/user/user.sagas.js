@@ -15,9 +15,13 @@ import {
 } from "./user.actions";
 import { UserActionTypes } from "./user.types";
 
-function* getUserSnapshot(userAuth) {
+function* getUserSnapshot(userAuth, additionalData) {
   try {
-    const userRef = yield call(createUserProfileDocument, userAuth);
+    const userRef = yield call(
+      createUserProfileDocument,
+      userAuth,
+      additionalData
+    );
     const userSnapshot = yield userRef.get();
     yield put(signinSuccess({ id: userSnapshot.id, ...userSnapshot.data() }));
   } catch (error) {
@@ -71,6 +75,10 @@ function* signUp({ payload: { displayName, email, password } }) {
   }
 }
 
+function* signInAfterSignUp({ payload: { user, additionalData } }) {
+  yield getUserSnapshot(user, additionalData);
+}
+
 function* onGoogleSignInStart() {
   yield takeLatest(UserActionTypes.GOOGLE_SIGN_IN_START, signInWithGoogle);
 }
@@ -94,6 +102,10 @@ function* onSignUpStart() {
   yield takeLatest(UserActionTypes.SIGN_UP_START, signUp);
 }
 
+function* onSignUpSuccess() {
+  yield takeLatest(UserActionTypes.SIGN_UP_SUCCESS, signInAfterSignUp);
+}
+
 export function* userSagas() {
   yield all([
     call(onGoogleSignInStart),
@@ -101,5 +113,6 @@ export function* userSagas() {
     call(onCheckUserSession),
     call(onSignOutStart),
     call(onSignUpStart),
+    call(onSignUpSuccess),
   ]);
 }
